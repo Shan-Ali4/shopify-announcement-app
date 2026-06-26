@@ -6,9 +6,8 @@ A Shopify Embedded App built with the **MERN Stack** that allows merchants to cr
 
 ## 📸 Admin Dashboard
 
-![Admin Dashboard](./assets/admin-dashboard.png)
+![Admin Dashboard](./Screenshots/Dashboard.png)
 
-> Replace the image path with your uploaded screenshot (for example `screenshots/dashboard.png`).
 
 ---
 
