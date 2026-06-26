@@ -1,11 +1,105 @@
-<div style="background:red;color:white;padding:20px;text-align:center;">
-🚀 Theme App Extension is Working
-</div>
+{% liquid
+  assign announcement = shop.metafields.my_app.announcement.value | strip
+  assign banner_id = 'my-app-announcement-banner-' | append: block.id
+%}
+
+{% if announcement != blank %}
+  <style>
+    #{{ banner_id }} {
+      box-sizing: border-box;
+      width: 100%;
+      padding: {{ block.settings.padding }}px 16px;
+      background: {{ block.settings.background_color }};
+      color: {{ block.settings.text_color }};
+      text-align: {{ block.settings.text_alignment }};
+      font-size: {{ block.settings.font_size }}px;
+      line-height: 1.4;
+      font-weight: 600;
+      z-index: 2147483647;
+    }
+
+    #{{ banner_id }} p {
+      max-width: 1200px;
+      margin: 0 auto;
+      color: inherit;
+      font: inherit;
+    }
+  </style>
+
+  <div id="{{ banner_id }}" role="region" aria-label="Store announcement">
+    <p>{{ announcement | escape }}</p>
+  </div>
+
+  <script>
+    (() => {
+      const banner = document.getElementById({{ banner_id | json }});
+
+      if (!banner || !document.body || document.body.firstElementChild === banner) {
+        return;
+      }
+
+      document.body.prepend(banner);
+    })();
+  </script>
+{% endif %}
 
 {% schema %}
 {
   "name": "Announcement Banner",
   "target": "body",
-  "settings": []
+  "settings": [
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#111827"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "Text alignment",
+      "default": "center",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "font_size",
+      "label": "Font size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "padding",
+      "label": "Vertical padding",
+      "min": 6,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "default": 12
+    }
+  ]
 }
 {% endschema %}

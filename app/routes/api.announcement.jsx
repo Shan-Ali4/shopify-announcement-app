@@ -5,15 +5,43 @@ import Announcement from "../models/Announcement";
 export async function action({ request }) {
   try {
     const { admin } = await authenticate.admin(request);
-
     const body = await request.json();
+    const text = typeof body.text === "string" ? body.text.trim() : "";
+
+    if (!text) {
+      return Response.json(
+        {
+          success: false,
+          error: "Announcement text is required.",
+        },
+        {
+          status: 400,
+        }
+      );
+    }
 
     // Save to MongoDB
     await connectDB();
 
     const announcement = await Announcement.create({
-      text: body.text,
+      text,
     });
+
+    const shopResponse = await admin.graphql(
+      `#graphql
+      query ShopId {
+        shop {
+          id
+        }
+      }`
+    );
+
+    const shopResult = await shopResponse.json();
+    const shopId = shopResult.data?.shop?.id;
+
+    if (!shopId) {
+      throw new Error("Unable to resolve authenticated shop ID.");
+    }
 
     // Save to Shopify Shop Metafield
     const response = await admin.graphql(
@@ -36,11 +64,11 @@ export async function action({ request }) {
         variables: {
           metafields: [
             {
-              ownerId: "gid://shopify/Shop/66668986462",
+              ownerId: shopId,
               namespace: "my_app",
               key: "announcement",
               type: "single_line_text_field",
-              value: body.text,
+              value: text,
             },
           ],
         },
@@ -48,6 +76,20 @@ export async function action({ request }) {
     );
 
     const metafieldResult = await response.json();
+    const userErrors = metafieldResult.data?.metafieldsSet?.userErrors ?? [];
+
+    if (userErrors.length > 0) {
+      return Response.json(
+        {
+          success: false,
+          error: "Shopify rejected the announcement metafield.",
+          userErrors,
+        },
+        {
+          status: 422,
+        }
+      );
+    }
 
     return Response.json({
       success: true,
