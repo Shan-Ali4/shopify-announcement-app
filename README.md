@@ -6,7 +6,7 @@ A Shopify Embedded App built with the **MERN Stack** that allows merchants to cr
 
 ## 📸 Admin Dashboard
 
-![Admin Dashboard](./Screenshots/Dashboard.png)
+![Admin Dashboard](Screenshot/Dashboard.png)
 
 
 ---
