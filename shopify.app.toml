@@ -2,7 +2,7 @@
 
 client_id = "e8d465857df5d070321ead8cc642876c"
 name = "The App"
-application_url = "https://example.com"
+application_url = "https://shopify-announcement-app-dwzz.onrender.com"
 embedded = true
 
 [access_scopes]
@@ -54,7 +54,7 @@ api_version = "2026-07"
   topics = [ "app/scopes_update" ]
 
 [auth]
-redirect_urls = [ "https://example.com/api/auth" ]
+redirect_urls = [ "https://shopify-announcement-app-dwzz.onrender.com/api/auth" ]
 
 [build]
 include_config_on_deploy = true
